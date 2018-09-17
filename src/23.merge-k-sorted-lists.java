@@ -40,28 +40,68 @@ class Solution {
       if (lists == null || lists.length == 0) {
         return dummy.next;
       }
-      int k = lists.length;
-      Queue<ListNode> minHeap = new PriorityQueue<ListNode>(k, new Comparator<ListNode>() {
-        public int compare(ListNode a, ListNode b) {
-          return a.val - b.val;
-        }
-      });
+      // int k = lists.length;
+      // Queue<ListNode> minHeap = new PriorityQueue<ListNode>(k, new Comparator<ListNode>() {
+      //   public int compare(ListNode a, ListNode b) {
+      //     return a.val - b.val;
+      //   }
+      // });
+      //
+      // for (int i = 0; i < k; i++) {
+      //   if (lists[i] != null) {
+      //     minHeap.offer(lists[i]);
+      //   }
+      // }
+      //
+      // while (!minHeap.isEmpty()) {
+      //   ListNode minNode = minHeap.poll();
+      //   tail.next = minNode;
+      //   tail = minNode;
+      //   if (minNode.next != null) {
+      //     minHeap.offer(minNode.next);
+      //   }
+      // }
+      //
+      // return dummy.next;
 
-      for (int i = 0; i < k; i++) {
-        if (lists[i] != null) {
-          minHeap.offer(lists[i]);
+      return helper(lists, 0, lists.length - 1);
+    }
+
+    public ListNode helper(ListNode[] lists, int start, int end) {
+      if (start == end) {
+        return lists[start];
+      }
+
+      int mid = start + (end - start) / 2;
+      ListNode left = helper(lists, start, mid);
+      ListNode right = helper(lists, mid + 1, end);
+      return mergeTwoSortedLists(left, right);
+    }
+
+    public ListNode mergeTwoSortedLists(ListNode A, ListNode B) {
+      ListNode head = new ListNode(0);
+      ListNode tail = head;
+
+      while (A != null && B != null) {
+        if (A.val < B.val) {
+          tail.next = A;
+          tail = A;
+          A = A.next;
+        } else {
+          tail.next = B;
+          tail = B;
+          B = B.next;
         }
       }
 
-      while (!minHeap.isEmpty()) {
-        ListNode minNode = minHeap.poll();
-        tail.next = minNode;
-        tail = minNode;
-        if (minNode.next != null) {
-          minHeap.offer(minNode.next);
-        }
+      if (A != null) {
+        tail.next = A;
       }
 
-      return dummy.next;
+      if (B != null) {
+        tail.next = B;
+      }
+
+      return head.next;
     }
 }

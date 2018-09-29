@@ -32,24 +32,68 @@
  *
  */
 class Solution {
+  // dynamic programming
+  // public int lengthOfLIS(int[] nums) {
+  //   // store the length of LIS from 0 to i
+  //   int[] currentLIS = new int[nums.length];
+  //   int max = 0;
+  //
+  //   for (int i = 0; i < nums.length; i++) {
+  //     currentLIS[i] = 1;
+  //     for (int j = 0; j < i; j++) {
+  //       if (nums[i] > nums[j]) {
+  //         currentLIS[i] = currentLIS[i] - currentLIS[j] > 1 ? currentLIS[i] : currentLIS[j] + 1;
+  //       }
+  //     }
+  //
+  //     if (currentLIS[i] > max) {
+  //       max = currentLIS[i];
+  //     }
+  //   }
+  //
+  //   return max;
+  // }
+
+  // binary search
   public int lengthOfLIS(int[] nums) {
-    // store the length of LIS from 0 to i
-    int[] currentLIS = new int[nums.length];
-    int max = 0;
+    int[] subsequence = new int[nums.length + 1];
+    subsequence[0] = Integer.MIN_VALUE;
+    for (int i = 1; i <= nums.length; i++) {
+      subsequence[i] = Integer.MAX_VALUE;
+    }
 
     for (int i = 0; i < nums.length; i++) {
-      currentLIS[i] = 1;
-      for (int j = 0; j < i; j++) {
-        if (nums[i] > nums[j]) {
-          currentLIS[i] = currentLIS[i] - currentLIS[j] > 1 ? currentLIS[i] : currentLIS[j] + 1;
-        }
-      }
+      int index = binarySearch(subsequence, nums[i]);
+      subsequence[index] = nums[i];
+    }
 
-      if (currentLIS[i] > max) {
-        max = currentLIS[i];
+    for (int i = nums.length; i >= 1; i--) {
+      if (subsequence[i] != Integer.MAX_VALUE) {
+        return i;
       }
     }
 
-    return max;
+    return 0;
+  }
+
+  public int binarySearch(int[] arr, int target) {
+    // find the first index that >= target
+    int start = 0;
+    int end = arr.length - 1;
+
+    while (start + 1 < end) {
+      int mid = start + (end - start) / 2;
+      if (arr[mid] < target) {
+        start = mid;
+      } else {
+        end = mid;
+      }
+    }
+
+    if (arr[start] >= target) {
+      return start;
+    }
+    
+    return end;
   }
 }
